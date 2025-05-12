@@ -1,0 +1,10 @@
+[project]
+name = "mcp-nlp"
+version = "0.0.1"
+description = "MCP-NLP"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp==2.3.3",
+    "textdistance==4.6.2"
+]
