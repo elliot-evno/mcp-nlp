@@ -1,7 +1,12 @@
+import logging
+import sys
 from functools import lru_cache
 from typing import Any
 
+from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.core.logging import InterceptHandler
 
 
 class AppSettings(BaseSettings):
@@ -15,6 +20,9 @@ class AppSettings(BaseSettings):
 
     # See ServerSettings from fastmcp for the list of settings that can be passed
     debug: bool = True
+
+    logging_level: int = logging.INFO
+    loggers: tuple[str, ...] = ("uvicorn.asgi", "uvicorn.access")
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -30,6 +38,17 @@ class AppSettings(BaseSettings):
             "instructions": self.instructions,
             "debug": self.debug,
         }
+
+    def configure_logging(self) -> None:
+        logging.getLogger().handlers = [InterceptHandler()]
+        for logger_name in self.loggers:
+            logging_logger = logging.getLogger(logger_name)
+            logging_logger.handlers = [InterceptHandler(level=self.logging_level)]
+
+        # Disable all other handlers
+        logger.remove()
+        # Add Loguru handler
+        logger.add(sys.stderr, level=self.logging_level)
 
 
 @lru_cache

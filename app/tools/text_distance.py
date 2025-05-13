@@ -2,7 +2,7 @@ from fastmcp import FastMCP
 
 from app.services.text_distance import TextDistanceEvaluator
 
-textdistance_mcp = FastMCP("MCP: Text Distance Calculator")
+textdistance_mcp: FastMCP = FastMCP("MCP: Text Distance Calculator")
 
 
 @textdistance_mcp.tool()
