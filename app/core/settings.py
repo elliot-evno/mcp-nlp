@@ -23,7 +23,12 @@ class AppSettings(BaseSettings):
     allowed_hosts: list[str] = ["*"]
 
     # See ServerSettings from fastmcp for the list of settings that can be passed
-    debug: bool = True
+    debug: bool = False
+
+    # API key authentication
+    api_key_enabled: bool = False
+    api_key: str | None = None
+    api_key_name: str = "X-API-Key"  # Header name
 
     logging_level: int = logging.INFO
     loggers: tuple[str, ...] = ("uvicorn.asgi", "uvicorn.access")
