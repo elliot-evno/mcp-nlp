@@ -1,5 +1,7 @@
 from fastmcp import FastMCP
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 
 from app.core.settings import get_app_settings
 from app.resources.version import VersionResource
@@ -15,7 +17,17 @@ def create_application() -> tuple[FastMCP, Starlette]:
 
     mcp_app: FastMCP = FastMCP(**settings.fastmcp_kwargs)
     # Extract the Starlette application for use with ASGI servers, like uvicorn
-    starlette_app = mcp_app.http_app()
+    starlette_app = mcp_app.http_app(
+        middleware=[
+            Middleware(
+                CORSMiddleware,
+                allow_origins=settings.allowed_hosts,
+                allow_credentials=True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+            ),
+        ]
+    )
 
     # Tools
     mcp_app.mount("textdistance", textdistance_mcp)

@@ -18,6 +18,8 @@ class AppSettings(BaseSettings):
     app_version: str = "0.0.1"
     instructions: str = "This server provides NLP tools."
 
+    allowed_hosts: list[str] = ["*"]
+
     # See ServerSettings from fastmcp for the list of settings that can be passed
     debug: bool = True
 
