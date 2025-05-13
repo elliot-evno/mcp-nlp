@@ -1,7 +1,7 @@
 import logging
 import sys
 from functools import lru_cache
-from typing import Any
+from typing import Any, Literal
 
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -17,6 +17,8 @@ class AppSettings(BaseSettings):
     app_name: str = "MCP-NLP Server"
     app_version: str = "0.0.1"
     instructions: str = "This server provides NLP tools."
+
+    transport: Literal["streamable-http", "sse"] = "streamable-http"
 
     allowed_hosts: list[str] = ["*"]
 

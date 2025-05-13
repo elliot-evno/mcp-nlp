@@ -26,7 +26,8 @@ def create_application() -> tuple[FastMCP, Starlette]:
                 allow_methods=["*"],
                 allow_headers=["*"],
             ),
-        ]
+        ],
+        transport=settings.transport,
     )
 
     # Tools
