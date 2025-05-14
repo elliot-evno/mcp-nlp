@@ -1,6 +1,16 @@
+from typing import Literal, get_args
+
 from .utils import _import_string
 
-__all__ = ["TextDistanceEvaluator"]
+__all__ = ["TextDistanceEvaluator", "Metric"]
+
+Metric = Literal[
+    "distance",
+    "similarity",
+    "normalized_distance",
+    "normalized_similarity",
+    "maximum",
+]
 
 
 class TextDistanceEvaluator:
@@ -11,7 +21,7 @@ class TextDistanceEvaluator:
     def __init__(
         self,
         algorithm: str,
-        metric: str = "normalized_similarity",
+        metric: Metric = "normalized_similarity",
     ):
         try:
             # Use import_module for importing "textdistance" package and target algorithm
@@ -28,3 +38,10 @@ class TextDistanceEvaluator:
             return getattr(self.algorithm, self.metric)(source, reference)
         except AttributeError as e:
             raise ValueError(f"Unsupported metric: '{self.metric}'") from e
+
+    @classmethod
+    def list_metrics(cls) -> list[str]:
+        """
+        Lists supported textdistance metrics.
+        """
+        return list(get_args(Metric))
