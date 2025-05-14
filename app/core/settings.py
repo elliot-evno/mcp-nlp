@@ -4,6 +4,8 @@ from functools import lru_cache
 from typing import Any, Literal
 
 from loguru import logger
+from pydantic import field_validator
+from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.core.logging import InterceptHandler
@@ -47,6 +49,16 @@ class AppSettings(BaseSettings):
             "instructions": self.instructions,
             "debug": self.debug,
         }
+
+    @field_validator("api_key")
+    def validate_api_key(cls, v: str | None, info: FieldValidationInfo) -> str | None:
+        """
+        Validate API key.
+        """
+        value = v.strip() if v else None
+        if info.data.get("api_key_enabled") and not value:
+            raise ValueError("`api_key` must be provided when `api_key_enabled` is True.")
+        return value
 
     def configure_logging(self) -> None:
         logging.getLogger().handlers = [InterceptHandler()]
