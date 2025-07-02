@@ -1,3 +1,4 @@
+from fastmcp.server.middleware import Middleware, MiddlewareContext
 from loguru import logger
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -28,3 +29,27 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
             )
 
         return await call_next(request)
+
+
+class LoggingMiddleware(Middleware):
+    """
+    Middleware to log incoming requests and outgoing responses.
+
+    This middleware logs the method, source, and message of incoming requests,
+    and the result of outgoing responses. It also logs any exceptions that occur
+    during the request processing.
+    """
+
+    async def on_message(self, context: MiddlewareContext, call_next):
+        logger.info(
+            f"Request: {context.method} | Source: {context.source} | Data: {context.message}"
+        )
+
+        try:
+            result = await call_next(context)
+            # Log the outgoing response
+            logger.info(f"Response: {context.method} | Result: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Error in {context.method}: {e}", exc_info=True)
+            raise

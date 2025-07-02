@@ -47,7 +47,6 @@ class AppSettings(BaseSettings):
         return {
             "name": self.app_name,
             "instructions": self.instructions,
-            "debug": self.debug,
         }
 
     @field_validator("api_key")
