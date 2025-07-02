@@ -50,7 +50,7 @@ def create_application() -> tuple[FastMCP, Starlette]:
     mcp_app.add_resource(VersionResource(settings.app_version))
 
     # MCP middlewares
-    mcp_app.add_middleware(LoggingMiddleware())
+    mcp_app.add_middleware(LoggingMiddleware(include_payloads=True))
 
     return mcp_app, starlette_app
 

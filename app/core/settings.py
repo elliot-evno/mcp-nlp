@@ -24,9 +24,6 @@ class AppSettings(BaseSettings):
 
     allowed_hosts: list[str] = ["*"]
 
-    # See ServerSettings from fastmcp for the list of settings that can be passed
-    debug: bool = False
-
     # API key authentication
     api_key_enabled: bool = False
     api_key: str | None = None

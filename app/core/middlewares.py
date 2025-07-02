@@ -1,4 +1,7 @@
-from fastmcp.server.middleware import Middleware, MiddlewareContext
+import json
+from typing import Any
+
+from fastmcp.server.middleware import CallNext, Middleware, MiddlewareContext
 from loguru import logger
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -40,16 +43,65 @@ class LoggingMiddleware(Middleware):
     during the request processing.
     """
 
-    async def on_message(self, context: MiddlewareContext, call_next):
-        logger.info(
-            f"Request: {context.method} | Source: {context.source} | Data: {context.message}"
-        )
+    def __init__(
+        self,
+        include_payloads: bool = False,
+        methods: list[str] | None = None,
+    ):
+        """Initialize structured logging middleware.
+
+        Args:
+            include_payloads: Whether to include message payloads in logs
+            methods: List of methods to log. If None, logs all methods.
+        """
+        self.include_payloads = include_payloads
+        self.methods = methods
+
+    def _create_log_entry(self, context: MiddlewareContext, event: str, **extra_fields) -> dict:
+        """Create a structured log entry."""
+        entry = {
+            "event": event,
+            "timestamp": context.timestamp.isoformat(),
+            "source": context.source,
+            "type": context.type,
+            "method": context.method,
+            **extra_fields,
+        }
+
+        if self.include_payloads and hasattr(context.message, "__dict__"):
+            try:
+                entry["payload"] = context.message.__dict__
+            except (TypeError, ValueError):
+                entry["payload"] = "<non-serializable>"
+
+        return entry
+
+    async def on_message(self, context: MiddlewareContext, call_next: CallNext) -> Any:
+        """Log structured message information."""
+
+        start_entry = self._create_log_entry(context, "request_start")
+        if self.methods and context.method not in self.methods:
+            return await call_next(context)
+
+        logger.info(json.dumps(start_entry))
 
         try:
             result = await call_next(context)
-            # Log the outgoing response
-            logger.info(f"Response: {context.method} | Result: {result}")
+
+            success_entry = self._create_log_entry(
+                context,
+                "request_success",
+                result_type=type(result).__name__ if result else None,
+            )
+            logger.info(json.dumps(success_entry))
+
             return result
         except Exception as e:
-            logger.error(f"Error in {context.method}: {e}", exc_info=True)
+            error_entry = self._create_log_entry(
+                context,
+                "request_error",
+                error_type=type(e).__name__,
+                error_message=str(e),
+            )
+            logger.error(json.dumps(error_entry))
             raise
