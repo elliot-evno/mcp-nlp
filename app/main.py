@@ -16,15 +16,14 @@ def create_application() -> tuple[FastMCP, Starlette]:
     # Configure logging
     settings.configure_logging()
 
-    # Configure starlette middlewares
+    # Starlette middlewares
     custom_middlewares = [
-        # CORS Middleware
         Middleware(
             CORSMiddleware,
             allow_origins=settings.allowed_hosts,
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
+            allow_credentials=settings.allow_credentials,
+            allow_methods=settings.allowed_methods,
+            allow_headers=settings.allowed_headers,
         ),
     ]
     if settings.api_key_enabled and settings.api_key is not None:
@@ -37,7 +36,9 @@ def create_application() -> tuple[FastMCP, Starlette]:
             )
         )
 
+    # Create the FastMCP application
     mcp_app: FastMCP = FastMCP(**settings.fastmcp_kwargs)
+
     # Extract the Starlette application for use with ASGI servers, like uvicorn
     starlette_app = mcp_app.http_app(
         middleware=custom_middlewares,
@@ -49,7 +50,7 @@ def create_application() -> tuple[FastMCP, Starlette]:
     # Resources
     mcp_app.add_resource(VersionResource(settings.app_version))
 
-    # MCP middlewares
+    # FastMCP Middlewares
     mcp_app.add_middleware(LoggingMiddleware(include_payloads=True))
 
     return mcp_app, starlette_app

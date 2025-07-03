@@ -23,6 +23,9 @@ class AppSettings(BaseSettings):
     transport: Literal["streamable-http", "sse"] = "streamable-http"
 
     allowed_hosts: list[str] = ["*"]
+    allowed_methods: list[str] = ["GET", "POST", "OPTIONS"]
+    allowed_headers: list[str] = ["*"]
+    allow_credentials: bool = True
 
     # API key authentication
     api_key_enabled: bool = False
