@@ -158,3 +158,7 @@ To use the MCP-NLP server with VS Code:
 1. You can now use the MCP-NLP tools directly in VS Code through GitHub Copilot
 
 `MCP` | `Model Context Protocol` | `FastMCP` | `NLP`
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
