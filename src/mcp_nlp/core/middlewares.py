@@ -1,12 +1,15 @@
 import json
+import logging
 from typing import Any
 
 from fastmcp.server.middleware import CallNext, Middleware, MiddlewareContext
-from loguru import logger
 from starlette import status
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
+from starlette.types import ASGIApp
+
+logger = logging.getLogger("mcp-nlp")
 
 
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
@@ -16,12 +19,12 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
     If the API key is missing or invalid, a 401 Unauthorized response is returned.
     """
 
-    def __init__(self, app, api_key: str, api_key_name: str = "X-API-Key"):
+    def __init__(self, app: ASGIApp, api_key: str, api_key_name: str = "X-API-Key") -> None:
         super().__init__(app)
         self.api_key = api_key
         self.api_key_name = api_key_name
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         # Check for API key in header
         api_key = request.headers.get(self.api_key_name)
         if api_key != self.api_key:
@@ -45,9 +48,10 @@ class LoggingMiddleware(Middleware):
 
     def __init__(
         self,
+        *,
         include_payloads: bool = False,
         methods: list[str] | None = None,
-    ):
+    ) -> None:
         """Initialize structured logging middleware.
 
         Args:
@@ -57,7 +61,9 @@ class LoggingMiddleware(Middleware):
         self.include_payloads = include_payloads
         self.methods = methods
 
-    def _create_log_entry(self, context: MiddlewareContext, event: str, **extra_fields) -> dict:
+    def _create_log_entry(
+        self, context: MiddlewareContext, event: str, **extra_fields: Any
+    ) -> dict:
         """Create a structured log entry."""
         entry = {
             "event": event,

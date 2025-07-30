@@ -22,12 +22,13 @@ class TextDistanceEvaluator:
         self,
         algorithm: str,
         metric: Metric = "normalized_similarity",
-    ):
+    ) -> None:
         try:
             # Use import_module for importing "textdistance" package and target algorithm
             self.algorithm = _import_string(f"textdistance.{algorithm}")
         except ImportError as e:
-            raise ValueError(f"Unsupported algorithm: '{algorithm}'") from e
+            msg = f"Unsupported algorithm: '{algorithm}'"
+            raise ValueError(msg) from e
         self.metric = metric
 
     def compute(self, source: str, reference: str) -> float:
@@ -37,7 +38,8 @@ class TextDistanceEvaluator:
         try:
             return getattr(self.algorithm, self.metric)(source, reference)
         except AttributeError as e:
-            raise ValueError(f"Unsupported metric: '{self.metric}'") from e
+            msg = f"Unsupported metric: '{self.metric}'"
+            raise ValueError(msg) from e
 
     @classmethod
     def list_metrics(cls) -> list[str]:

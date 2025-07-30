@@ -1,14 +1,10 @@
 import logging
-import sys
 from functools import lru_cache
 from typing import Any, Literal
 
-from loguru import logger
 from pydantic import field_validator
 from pydantic_core.core_schema import FieldValidationInfo
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from app.core.logging import InterceptHandler
 
 
 class AppSettings(BaseSettings):
@@ -17,7 +13,6 @@ class AppSettings(BaseSettings):
     """
 
     app_name: str = "MCP-NLP Server"
-    app_version: str = "0.0.1"
     instructions: str = "This server provides NLP tools."
 
     transport: Literal["streamable-http", "sse"] = "streamable-http"
@@ -50,6 +45,7 @@ class AppSettings(BaseSettings):
         }
 
     @field_validator("api_key")
+    @classmethod
     def validate_api_key(cls, v: str | None, info: FieldValidationInfo) -> str | None:
         """
         Validate API key.
@@ -58,17 +54,6 @@ class AppSettings(BaseSettings):
         if info.data.get("api_key_enabled") and not value:
             raise ValueError("`api_key` must be provided when `api_key_enabled` is True.")
         return value
-
-    def configure_logging(self) -> None:
-        logging.getLogger().handlers = [InterceptHandler()]
-        for logger_name in self.loggers:
-            logging_logger = logging.getLogger(logger_name)
-            logging_logger.handlers = [InterceptHandler(level=self.logging_level)]
-
-        # Disable all other handlers
-        logger.remove()
-        # Add Loguru handler
-        logger.add(sys.stderr, level=self.logging_level)
 
 
 @lru_cache

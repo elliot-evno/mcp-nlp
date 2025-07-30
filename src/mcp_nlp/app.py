@@ -3,18 +3,16 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
-from app.core.middlewares import ApiKeyAuthMiddleware, LoggingMiddleware
-from app.core.settings import get_app_settings
-from app.resources.version import VersionResource
-from app.tools.text_distance import textdistance_mcp
+from mcp_nlp import __version__
+from mcp_nlp.core.middlewares import ApiKeyAuthMiddleware, LoggingMiddleware
+from mcp_nlp.core.settings import get_app_settings
+from mcp_nlp.resources.version import VersionResource
+from mcp_nlp.tools.text_distance import textdistance_mcp
 
 
 def create_application() -> tuple[FastMCP, Starlette]:
     """Create a FastMCP app"""
     settings = get_app_settings()
-
-    # Configure logging
-    settings.configure_logging()
 
     # Starlette middlewares
     custom_middlewares = [
@@ -48,7 +46,7 @@ def create_application() -> tuple[FastMCP, Starlette]:
     # Tools
     mcp_app.mount(textdistance_mcp, "textdistance")
     # Resources
-    mcp_app.add_resource(VersionResource(settings.app_version))
+    mcp_app.add_resource(VersionResource(__version__))
 
     # FastMCP Middlewares
     mcp_app.add_middleware(LoggingMiddleware(include_payloads=True))

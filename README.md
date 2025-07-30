@@ -18,12 +18,14 @@ Before you begin, ensure you have the following installed:
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/tivaliy/mcp-nlp.git
    cd mcp-nlp
    ```
 
-2. Install dependencies (using `uv`):
+1. Install dependencies (using `uv`):
+
    ```bash
    uv sync
    ```
@@ -35,15 +37,18 @@ Before you begin, ensure you have the following installed:
 The MCP-NLP server supports two authentication modes:
 
 1. **Unauthenticated Mode** (default):
+
    - No API key required to access the server
    - Set `API_KEY_ENABLED=False` in your `.env` file
 
-2. **API Key Authentication**:
+1. **API Key Authentication**:
+
    - Requires a valid API key in the request header
    - Set `API_KEY_ENABLED=True` and `API_KEY=your-secret-key` in your `.env` file
    - By default, the header name is `X-API-Key` (can be customized with `API_KEY_NAME`)
 
 Example `.env` file:
+
 ```bash
 # Authentication configuration
 API_KEY_ENABLED=True
@@ -63,6 +68,7 @@ The MCP-NLP server currently provides the following MCP tools:
 Calculate similarity/distance between text sequences using various algorithms:
 
 - **`#textdistance_measure`**:
+
   - **Purpose**: Measures text distance between two sequences of strings
   - **Parameters**:
     - `source` (required): The source text string
@@ -72,11 +78,13 @@ Calculate similarity/distance between text sequences using various algorithms:
   - **Returns**: A float value representing the calculated distance/similarity
 
 - **`#textdistance_list_metrics`**:
+
   - **Purpose**: Lists all supported metrics for text distance algorithms
   - **Parameters**: None
   - **Returns**: A list of available metrics: `distance`, `similarity`, `normalized_distance`, `normalized_similarity`, `maximum`
 
 - **Supported Metrics**:
+
   - `distance`: Raw distance score
   - `similarity`: Raw similarity score
   - `normalized_distance`: Distance normalized to a 0-1 scale
@@ -91,30 +99,35 @@ Calculate similarity/distance between text sequences using various algorithms:
 
 To run the application locally:
 
-Create a `.env` file in the root directory (see `.env.example` as an example).
-
 1. Start the FastMCP application:
+
    ```bash
-   uvicorn app.main:http_app --reload
+   mcp-nlp --transport streamable-http
    ```
 
-2. Access the MCP server endpoint at `http://127.0.0.1:8000/mcp/` (in case of `streamable-http` transport)
+1. Access the MCP server endpoint at `http://127.0.0.1:8000/mcp` (in case of `streamable-http` transport)
 
 ### Run MCP Server Using Docker
+
+Create a `.env` file in the root directory (see `.env.example` as an example).
 
 To run the MCP server in a Docker container:
 
 1. Build the Docker image:
+
    ```bash
    docker build -t mcp-nlp .
    ```
 
-2. Run the Docker container:
-   ```bash
-   docker run --rm -p 8000:8000 mcp-nlp
-    ```
+1. Run the Docker container:
 
-3. Access the MCP server endpoint at `http://127.0.1:8000/mcp/` (in case of `streamable-http` transport)
+   ```bash
+   docker run --rm -e TRANSPORT=streamable-http -p 8000:8000 mcp-nlp
+   ```
+
+1. Access the MCP server endpoint at `http://127.0.0.1:8000/mcp` (in case of `streamable-http` transport)
+
+Make sure to set the `TRANSPORT` environment variable to `streamable-http` or `sse` when running the Docker container.
 
 ## VS Code Integration
 
@@ -122,22 +135,24 @@ To use the MCP-NLP server with VS Code:
 
 1. Make sure your MCP-NLP server is running
 
-2. Add the server configuration to your VS Code `settings.json`:
+1. Add the server configuration to your VS Code `settings.json` (using `stdio` transport):
+
    ```json
-   "mcp": {
-     "servers": {
-       "mcp-nlp": {
-         "url": "http://0.0.0.0:8000/mcp/",
-         "type": "http",
-         "headers": {
-           "X-API-Key": "not-a-secret"  // Only needed if API_KEY_ENABLED=True
-         }
-       }
-     }
-   }
+   {
+       "servers": {
+           "mcp-nlp": {
+               "type": "stdio",
+               "command": "${workspaceFolder}/.venv/bin/mcp-nlp",
+               "env": {
+                    "API_KEY_ENABLED": "false"
+                }
+            }
+        }
+    }
    ```
 
-3. Enable MCP in VS Code:
+1. Enable MCP in VS Code:
+
    ```json
    "chat.mcp.enabled": true,
    "github.copilot.advanced": {
@@ -145,6 +160,6 @@ To use the MCP-NLP server with VS Code:
    }
    ```
 
-4. You can now use the MCP-NLP tools directly in VS Code through GitHub Copilot
+1. You can now use the MCP-NLP tools directly in VS Code through GitHub Copilot
 
 `MCP` | `Model Context Protocol` | `FastMCP` | `NLP`
