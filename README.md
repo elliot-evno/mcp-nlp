@@ -39,12 +39,12 @@ The MCP-NLP server supports two authentication modes:
 1. **Unauthenticated Mode** (default):
 
    - No API key required to access the server
-   - Set `API_KEY_ENABLED=False` in your `.env` file
+   - Set environment variable `API_KEY_ENABLED=False`
 
 1. **API Key Authentication**:
 
    - Requires a valid API key in the request header
-   - Set `API_KEY_ENABLED=True` and `API_KEY=your-secret-key` in your `.env` file
+   - Set environment variable `API_KEY_ENABLED=True` and `API_KEY=your-secret-key`
    - By default, the header name is `X-API-Key` (can be customized with `API_KEY_NAME`)
 
 Example `.env` file:
@@ -54,9 +54,6 @@ Example `.env` file:
 API_KEY_ENABLED=True
 API_KEY=not-a-secret
 # API_KEY_NAME=X-API-Key  # Optional: customize header name
-
-# Logging level (20=INFO, 10=DEBUG)
-LOGGING_LEVEL=20
 ```
 
 ## Available Tools
@@ -108,8 +105,6 @@ To run the application locally:
 1. Access the MCP server endpoint at `http://127.0.0.1:8000/mcp` (in case of `streamable-http` transport)
 
 ### Run MCP Server Using Docker
-
-Create a `.env` file in the root directory (see `.env.example` as an example).
 
 To run the MCP server in a Docker container:
 

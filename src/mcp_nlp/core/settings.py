@@ -1,4 +1,3 @@
-import logging
 from functools import lru_cache
 from typing import Any, Literal
 
@@ -26,9 +25,6 @@ class AppSettings(BaseSettings):
     api_key_enabled: bool = False
     api_key: str | None = None
     api_key_name: str = "X-API-Key"  # Header name
-
-    logging_level: int = logging.INFO
-    loggers: tuple[str, ...] = ("uvicorn.asgi", "uvicorn.access")
 
     model_config = SettingsConfigDict(
         env_file=".env",
