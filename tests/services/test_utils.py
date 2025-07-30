@@ -3,7 +3,7 @@ import sys
 import pytest
 from textdistance.algorithms.base import Base, BaseSimilarity
 
-from mcp_nlp.services.utils import _import_string
+from src.mcp_nlp.services.utils import _import_string
 
 
 def test_import_string() -> None:
@@ -24,7 +24,7 @@ def test_import_string_w_badly_formatted_path() -> None:
         _import_string("textdistance-levenshtein")
 
 
-def test_import_string_forces_module_import():
+def test_import_string_forces_module_import() -> None:
     if "math" in sys.modules:
         del sys.modules["math"]
     sqrt = _import_string("math.sqrt")

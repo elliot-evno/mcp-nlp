@@ -3,11 +3,11 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
-from mcp_nlp import __version__
-from mcp_nlp.core.middlewares import ApiKeyAuthMiddleware, LoggingMiddleware
-from mcp_nlp.core.settings import get_app_settings
-from mcp_nlp.resources.version import VersionResource
-from mcp_nlp.tools.text_distance import textdistance_mcp
+from . import __version__
+from .core.middlewares import ApiKeyAuthMiddleware, LoggingMiddleware
+from .core.settings import get_app_settings
+from .resources.version import VersionResource
+from .tools.text_distance import textdistance_mcp
 
 
 def create_application() -> tuple[FastMCP, Starlette]:

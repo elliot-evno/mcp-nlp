@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from mcp_nlp.app import create_application
+from src.mcp_nlp.app import create_application
 
 # Create the application instance
 mcp_app, http_app = create_application()

@@ -80,6 +80,7 @@ line-ending = "auto"
 
 [tool.mypy]
 python_version = "3.12"
+exclude = "^src/"
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"

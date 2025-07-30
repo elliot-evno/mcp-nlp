@@ -34,7 +34,7 @@ repos:
         # use 'mypy "$@" || true' to ignore exit code
         entry: bash -c 'mypy "$@"' --
         additional_dependencies:
-          - types-pyyaml>=6.0.12.20250516
+          - pydantic
         args: [ "--no-strict-optional", "--ignore-missing-imports" ]
 
   - repo: https://github.com/executablebooks/mdformat

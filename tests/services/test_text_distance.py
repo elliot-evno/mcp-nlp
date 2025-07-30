@@ -1,6 +1,6 @@
 import pytest
 
-from mcp_nlp.services.text_distance import Metric, TextDistanceEvaluator
+from src.mcp_nlp.services.text_distance import Metric, TextDistanceEvaluator
 
 
 def test_text_distance_evaluator_init_success() -> None:

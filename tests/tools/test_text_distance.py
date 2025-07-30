@@ -1,6 +1,6 @@
 import pytest
 
-from mcp_nlp.tools.text_distance import list_metrics, measure
+from src.mcp_nlp.tools.text_distance import list_metrics, measure
 
 
 @pytest.mark.asyncio

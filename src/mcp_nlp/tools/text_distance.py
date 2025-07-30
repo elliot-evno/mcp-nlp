@@ -1,6 +1,6 @@
 from fastmcp import FastMCP
 
-from mcp_nlp.services.text_distance import Metric, TextDistanceEvaluator
+from ..services.text_distance import Metric, TextDistanceEvaluator
 
 textdistance_mcp: FastMCP = FastMCP("MCP: Text Distance Calculator")
 
