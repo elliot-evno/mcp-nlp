@@ -24,8 +24,13 @@ mcp-nlp = "mcp_nlp.__main__:main"
 
 [dependency-groups]
 dev = [
+    "black>=25.1.0",
+    "httpx>=0.28.1",
     "mypy>=1.16.1",
     "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
     "ruff>=0.12.2",
 ]
 
@@ -63,6 +68,9 @@ ignore = ["ANN401", "EM101"]
 fixable = ["ALL"]
 unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S", "ANN", "B017"]
 
 [tool.ruff.format]
 quote-style = "double"
